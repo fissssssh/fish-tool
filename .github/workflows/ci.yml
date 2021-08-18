@@ -57,6 +57,7 @@ jobs:
           host: ${{secrets.HOST}}
           username: ${{secrets.USERNAME}}
           password: ${{secrets.PASSWORD}}
+          script_stop: false
           script: "[ -f ~/docker/fish-tool/docker-compose.yml ] && docker-compose -f ~/docker/fish-tool/docker-compose.yml down"
 
       - name: copy new docker-compose file
@@ -74,4 +75,4 @@ jobs:
           host: ${{secrets.HOST}}
           username: ${{secrets.USERNAME}}
           password: ${{secrets.PASSWORD}}
-          script: docker-compose -f ~/docker/fish-tool/docker-compose.yml pull && docker-compose -f ~/docker/fish-tool/docker-compose.yml up -d
+          script: "docker-compose -f ~/docker/fish-tool/docker-compose.yml pull && docker-compose -f ~/docker/fish-tool/docker-compose.yml up -d"

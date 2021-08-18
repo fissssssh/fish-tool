@@ -1,0 +1,12 @@
+.json-value-string {
+  color: #fa8c16;
+}
+.json-value-boolean {
+  color: #2f54eb;
+}
+.json-value-number {
+  color: #722ed1;
+}
+.json-value-null {
+  color: #eb2f96;
+}

@@ -1,7 +1,7 @@
 version: "3"
 services:
   app:
-    name: fish-tool
-    image: registry.cn-hangzhou.aliyuncs.com/fissssssh/fish-tool.app:latest
+    container_name: fish-tool
+    image: registry.cn-hangzhou.aliyuncs.com/fissssssh/fish-tool.app:0.1.0
     ports:
       - "30000:80"

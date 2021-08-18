@@ -37,7 +37,13 @@ export default function JsonViewer() {
         if (element === null) {
           tree.push({
             key: treeKey,
-            title: <JsonLine propertyName={propertyName} propertyType={"null"} value={"null"} />,
+            title: (
+              <JsonLine
+                propertyName={propertyName}
+                propertyType={"null"}
+                value={"null"}
+              />
+            ),
           });
           continue;
         }
@@ -46,13 +52,25 @@ export default function JsonViewer() {
         }
         tree.push({
           key: treeKey,
-          title: <JsonLine propertyName={propertyName} propertyType={propertyType} value={null} />,
+          title: (
+            <JsonLine
+              propertyName={propertyName}
+              propertyType={propertyType}
+              value={null}
+            />
+          ),
           children: jsonToTree(treeKey, element),
         });
       } else {
         tree.push({
           key: treeKey,
-          title: <JsonLine propertyName={propertyName} propertyType={propertyType} value={element} />,
+          title: (
+            <JsonLine
+              propertyName={propertyName}
+              propertyType={propertyType}
+              value={element}
+            />
+          ),
         });
       }
     }
@@ -74,16 +92,20 @@ export default function JsonViewer() {
           </Upload>
         </Space>
       </Col>
-      <Col span={12}>
+      <Col xs={24} sm={24} md={12}>
         <TextArea
-          style={{ height: "500px" }}
+          style={{ height: "300px", resize: "none" }}
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="paste your json to here."
         />
       </Col>
-      <Col span={12}>
-        {jsonViewTree && jsonViewTree.length > 0 ? <Tree height={500} treeData={jsonViewTree} /> : <Text>No data</Text>}
+      <Col xs={24} sm={24} md={12}>
+        {jsonViewTree && jsonViewTree.length > 0 ? (
+          <Tree height={300} treeData={jsonViewTree} />
+        ) : (
+          <Text>No data</Text>
+        )}
       </Col>
     </Row>
   );

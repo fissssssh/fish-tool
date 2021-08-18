@@ -10,9 +10,13 @@ const { Header, Footer, Content } = Layout;
 export default function App() {
   let location = useLocation();
   return (
-    <Layout>
+    <Layout style={{ height: "100vh", alignItems: "stretch" }}>
       <Header>
-        <Menu theme="dark" mode="horizontal" defaultSelectedKeys={[location.pathname]}>
+        <Menu
+          theme="dark"
+          mode="horizontal"
+          defaultSelectedKeys={[location.pathname]}
+        >
           {routes.map((route) => (
             <Menu.Item key={route.path}>
               <Link to={route.path}>{route.name}</Link>
@@ -20,7 +24,7 @@ export default function App() {
           ))}
         </Menu>
       </Header>
-      <Content style={{ padding: "24px" }}>
+      <Content style={{ padding: "24px", overflowY: "scroll" }}>
         <Switch>
           {routes.map((route) => (
             <Route
@@ -35,7 +39,9 @@ export default function App() {
           ))}
         </Switch>
       </Content>
-      <Footer style={{ textAlign: "center" }}>Fish Tool @2021 Create by fissssssh</Footer>
+      <Footer style={{ textAlign: "center" }}>
+        Fish Tool @2021 Create by fissssssh
+      </Footer>
     </Layout>
   );
 }

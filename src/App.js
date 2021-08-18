@@ -23,7 +23,15 @@ export default function App() {
       <Content style={{ padding: "24px" }}>
         <Switch>
           {routes.map((route) => (
-            <Route key={route.path} exact path={route.path} component={route.component}></Route>
+            <Route
+              key={route.path}
+              exact={route.exact}
+              path={route.path}
+              render={(props) => {
+                document.title = route.meta.title + " - FishTool";
+                return <route.component></route.component>;
+              }}
+            ></Route>
           ))}
         </Switch>
       </Content>

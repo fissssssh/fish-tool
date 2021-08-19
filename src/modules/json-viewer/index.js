@@ -1,8 +1,7 @@
 import React, { useState } from "react";
-import { Row, Col, Input, Button, Tree, Typography, Space, Upload } from "antd";
+import { Row, Col, Input, Button, Tree, Space, Upload, Empty } from "antd";
 import JsonLine from "./json-line";
 const { TextArea } = Input;
-const { Text } = Typography;
 
 export default function JsonViewer() {
   const [input, setInput] = useState("");
@@ -18,7 +17,6 @@ export default function JsonViewer() {
     setJsonViewTree([]);
   }
   function btnImportClicked(file) {
-    debugger;
     const fr = new FileReader();
     fr.onload = (e) => {
       setInput(e.target.result);
@@ -37,13 +35,7 @@ export default function JsonViewer() {
         if (element === null) {
           tree.push({
             key: treeKey,
-            title: (
-              <JsonLine
-                propertyName={propertyName}
-                propertyType={"null"}
-                value={"null"}
-              />
-            ),
+            title: <JsonLine propertyName={propertyName} propertyType={"null"} value={"null"} />,
           });
           continue;
         }
@@ -52,25 +44,13 @@ export default function JsonViewer() {
         }
         tree.push({
           key: treeKey,
-          title: (
-            <JsonLine
-              propertyName={propertyName}
-              propertyType={propertyType}
-              value={null}
-            />
-          ),
+          title: <JsonLine propertyName={propertyName} propertyType={propertyType} value={null} />,
           children: jsonToTree(treeKey, element),
         });
       } else {
         tree.push({
           key: treeKey,
-          title: (
-            <JsonLine
-              propertyName={propertyName}
-              propertyType={propertyType}
-              value={element}
-            />
-          ),
+          title: <JsonLine propertyName={propertyName} propertyType={propertyType} value={element} />,
         });
       }
     }
@@ -87,24 +67,30 @@ export default function JsonViewer() {
           <Button disabled={!input} onClick={btnClearClicked}>
             Clear
           </Button>
-          <Upload accept=".json" beforeUpload={btnImportClicked}>
-            <Button type="primary">Import</Button>
-          </Upload>
+          {jsonViewTree && jsonViewTree.length > 0 && (
+            <Upload accept=".json" beforeUpload={btnImportClicked}>
+              <Button type="primary">Import</Button>
+            </Upload>
+          )}
         </Space>
       </Col>
-      <Col xs={24} sm={24} md={12}>
+      <Col xs={24} sm={24} md={8}>
         <TextArea
-          style={{ height: "300px", resize: "none" }}
+          style={{ height: "600px", resize: "none" }}
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="paste your json to here."
         />
       </Col>
-      <Col xs={24} sm={24} md={12}>
+      <Col xs={24} sm={24} md={16}>
         {jsonViewTree && jsonViewTree.length > 0 ? (
-          <Tree height={300} treeData={jsonViewTree} />
+          <Tree style={{ height: "600px" }} defaultExpandAll height={600} treeData={jsonViewTree} />
         ) : (
-          <Text>No data</Text>
+          <Empty>
+            <Upload accept=".json" beforeUpload={btnImportClicked}>
+              <Button type="primary">Import</Button>
+            </Upload>
+          </Empty>
         )}
       </Col>
     </Row>

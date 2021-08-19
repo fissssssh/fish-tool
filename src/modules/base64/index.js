@@ -38,13 +38,13 @@ export default function Base64() {
       </Col>
       <Col xs={24} sm={24} md={4} lg={2}>
         <Space direction={buttonsDirection} align={"center"} style={{ width: "100%" }}>
-          <Button onClick={btnEncodeClicked} disabled={!canEncodeOrDecode} className="btn-operation" type="primary">
+          <Button onClick={btnEncodeClicked} disabled={!canEncodeOrDecode} type="primary">
             Encode
           </Button>
-          <Button onClick={btnDecodeClicked} disabled={!canEncodeOrDecode} className="btn-operation" type="primary">
+          <Button onClick={btnDecodeClicked} disabled={!canEncodeOrDecode} type="primary">
             Decode
           </Button>
-          <Button onClick={btnClearClicked} disabled={!canClear} className="btn-operation">
+          <Button onClick={btnClearClicked} disabled={!canClear}>
             Clear
           </Button>
         </Space>

@@ -3,10 +3,59 @@ import { Row, Col, Input, Button, Tree, Space, Upload, Empty } from "antd";
 import JsonLine from "./json-line";
 const { TextArea } = Input;
 
+function jsonToTree(parentKey, root) {
+  const tree = [];
+  for (const propertyName in root) {
+    const treeKey = `${parentKey}:${propertyName}`;
+    const element = root[propertyName];
+    let propertyType = typeof element;
+    if (propertyType === "object") {
+      if (element === null) {
+        tree.push({
+          key: treeKey,
+          title: <JsonLine propertyName={propertyName} propertyType={"null"} value={"null"} />,
+        });
+        continue;
+      }
+      if (Array.isArray(element)) {
+        propertyType = `array[${element.length}]`;
+      }
+      tree.push({
+        key: treeKey,
+        title: <JsonLine propertyName={propertyName} propertyType={propertyType} value={null} />,
+        children: jsonToTree(treeKey, element),
+      });
+    } else {
+      tree.push({
+        key: treeKey,
+        title: <JsonLine propertyName={propertyName} propertyType={propertyType} value={element} />,
+      });
+    }
+  }
+  return tree;
+}
+
 export default function JsonViewer() {
   const [input, setInput] = useState("");
   const [jsonViewTree, setJsonViewTree] = useState([]);
 
+  function btnFormatClicked() {
+    const root = JSON.parse(input);
+    setInput(JSON.stringify(root, null, 4));
+  }
+  function btnCompactClicked() {
+    setInput(input.replace(/\s/g, ""));
+  }
+  function btnEscapeClicked() {
+    setInput(JSON.stringify(input));
+  }
+  function btnAntiEscapeClicked() {
+    const antiEscaped = JSON.parse(input);
+    if (typeof antiEscaped === "object") {
+      return;
+    }
+    setInput(antiEscaped);
+  }
   function btnViewClicked() {
     const root = JSON.parse(input);
     const tree = jsonToTree("root", root);
@@ -25,42 +74,23 @@ export default function JsonViewer() {
     // stop upload and don't show in upload list.
     return Upload.LIST_IGNORE;
   }
-  function jsonToTree(parentKey, root) {
-    const tree = [];
-    for (const propertyName in root) {
-      const treeKey = `${parentKey}:${propertyName}`;
-      const element = root[propertyName];
-      let propertyType = typeof element;
-      if (propertyType === "object") {
-        if (element === null) {
-          tree.push({
-            key: treeKey,
-            title: <JsonLine propertyName={propertyName} propertyType={"null"} value={"null"} />,
-          });
-          continue;
-        }
-        if (Array.isArray(element)) {
-          propertyType = `array[${element.length}]`;
-        }
-        tree.push({
-          key: treeKey,
-          title: <JsonLine propertyName={propertyName} propertyType={propertyType} value={null} />,
-          children: jsonToTree(treeKey, element),
-        });
-      } else {
-        tree.push({
-          key: treeKey,
-          title: <JsonLine propertyName={propertyName} propertyType={propertyType} value={element} />,
-        });
-      }
-    }
-    return tree;
-  }
 
   return (
     <Row gutter={[8, 8]}>
       <Col span={24}>
         <Space>
+          <Button disabled={!input} onClick={btnFormatClicked} type="primary">
+            Format
+          </Button>
+          <Button disabled={!input} onClick={btnCompactClicked} type="primary">
+            Compact
+          </Button>
+          <Button disabled={!input} onClick={btnEscapeClicked} type="primary">
+            Escape
+          </Button>
+          <Button disabled={!input} onClick={btnAntiEscapeClicked} type="primary">
+            AntiEscape
+          </Button>
           <Button disabled={!input} onClick={btnViewClicked} type="primary">
             View
           </Button>

@@ -1,5 +1,15 @@
 import React, { useState } from "react";
-import { Row, Col, Input, Button, Tree, Space, Upload, Empty } from "antd";
+import {
+  Row,
+  Col,
+  Input,
+  Button,
+  Tree,
+  Space,
+  Upload,
+  Empty,
+  message,
+} from "antd";
 import JsonLine from "./json-line";
 const { TextArea } = Input;
 
@@ -13,22 +23,39 @@ function jsonToTree(parentKey, root) {
       if (element === null) {
         tree.push({
           key: treeKey,
-          title: <JsonLine propertyName={propertyName} propertyType={"null"} value={"null"} />,
+          title: <JsonLine name={propertyName} type={"null"} value={"null"} />,
         });
         continue;
       }
+      let itemsLength = 0;
       if (Array.isArray(element)) {
-        propertyType = `array[${element.length}]`;
+        propertyType = `array`;
+        itemsLength = element.length;
+      } else {
+        console.log(element);
+        itemsLength = Object.keys(element).length;
       }
       tree.push({
         key: treeKey,
-        title: <JsonLine propertyName={propertyName} propertyType={propertyType} value={null} />,
+        title: (
+          <JsonLine
+            name={propertyName}
+            type={propertyType}
+            itemsLength={itemsLength}
+          />
+        ),
         children: jsonToTree(treeKey, element),
       });
     } else {
       tree.push({
         key: treeKey,
-        title: <JsonLine propertyName={propertyName} propertyType={propertyType} value={element} />,
+        title: (
+          <JsonLine
+            name={propertyName}
+            type={propertyType}
+            value={element.toString()}
+          />
+        ),
       });
     }
   }
@@ -40,8 +67,12 @@ export default function JsonViewer() {
   const [jsonViewTree, setJsonViewTree] = useState([]);
 
   function btnFormatClicked() {
-    const root = JSON.parse(input);
-    setInput(JSON.stringify(root, null, 4));
+    try {
+      const root = JSON.parse(input);
+      setInput(JSON.stringify(root, null, 4));
+    } catch (error) {
+      message.error(error.message);
+    }
   }
   function btnCompactClicked() {
     setInput(input.replace(/\s/g, ""));
@@ -50,29 +81,42 @@ export default function JsonViewer() {
     setInput(JSON.stringify(input));
   }
   function btnAntiEscapeClicked() {
-    const antiEscaped = JSON.parse(input);
-    if (typeof antiEscaped === "object") {
-      return;
+    try {
+      const antiEscaped = JSON.parse(input);
+      if (typeof antiEscaped === "object") {
+        return;
+      }
+      setInput(antiEscaped);
+    } catch (error) {
+      message.error(error.message);
     }
-    setInput(antiEscaped);
   }
   function btnViewClicked() {
-    const root = JSON.parse(input);
-    const tree = jsonToTree("root", root);
-    setJsonViewTree(tree);
+    try {
+      const root = JSON.parse(input);
+      const tree = jsonToTree("root", root);
+      setJsonViewTree(tree);
+    } catch (error) {
+      message.error(error.message);
+    }
   }
   function btnClearClicked() {
     setInput("");
     setJsonViewTree([]);
   }
   function btnImportClicked(file) {
-    const fr = new FileReader();
-    fr.onload = (e) => {
-      setInput(e.target.result);
-    };
-    fr.readAsText(file);
-    // stop upload and don't show in upload list.
-    return Upload.LIST_IGNORE;
+    try {
+      const fr = new FileReader();
+      fr.onload = (e) => {
+        setInput(e.target.result);
+      };
+      fr.readAsText(file);
+    } catch (error) {
+      message.error(error.message);
+    } finally {
+      // stop upload and don't show in upload list.
+      return Upload.LIST_IGNORE;
+    }
   }
 
   return (
@@ -88,8 +132,12 @@ export default function JsonViewer() {
           <Button disabled={!input} onClick={btnEscapeClicked} type="primary">
             Escape
           </Button>
-          <Button disabled={!input} onClick={btnAntiEscapeClicked} type="primary">
-            AntiEscape
+          <Button
+            disabled={!input}
+            onClick={btnAntiEscapeClicked}
+            type="primary"
+          >
+            Anti Escape
           </Button>
           <Button disabled={!input} onClick={btnViewClicked} type="primary">
             View
@@ -114,7 +162,12 @@ export default function JsonViewer() {
       </Col>
       <Col xs={24} sm={24} md={16}>
         {jsonViewTree && jsonViewTree.length > 0 ? (
-          <Tree style={{ height: "600px" }} defaultExpandAll height={600} treeData={jsonViewTree} />
+          <Tree
+            style={{ height: "600px" }}
+            defaultExpandAll
+            height={600}
+            treeData={jsonViewTree}
+          />
         ) : (
           <Empty>
             <Upload accept=".json" beforeUpload={btnImportClicked}>

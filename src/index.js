@@ -3,10 +3,14 @@ import ReactDOM from "react-dom";
 import "./index.css";
 import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter as Router } from "react-router-dom";
+import { ConfigProvider } from "antd";
+import { zhCN } from "antd/lib/locale/zh_CN";
 ReactDOM.render(
-  <Router>
-    <App />
-  </Router>,
+  <ConfigProvider locale={zhCN}>
+    <Router>
+      <App />
+    </Router>
+  </ConfigProvider>,
   document.getElementById("root")
 );
 

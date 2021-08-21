@@ -4,7 +4,6 @@ import { Layout, Menu } from "antd";
 import React from "react";
 import routes from "./router";
 import { Switch, Route, useLocation } from "react-router-dom";
-
 const { Header, Footer, Content } = Layout;
 
 export default function App() {

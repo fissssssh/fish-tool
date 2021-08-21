@@ -1,23 +1,35 @@
 import React from "react";
 import "./json-line.css";
 import { Typography, Space, Tag } from "antd";
+import PropTypes from "prop-types";
 const { Text } = Typography;
-
-export default function JsonLine(props) {
-  let jsonValue;
-  if (props.value) {
-    let displayValue = props.value.toString();
-    if (props.propertyType === "string") {
-      displayValue = `"${displayValue}"`;
-    }
-    jsonValue = <Text className={"json-value-" + props.propertyType}>{displayValue}</Text>;
+export default class JsonLine extends React.Component {
+  render() {
+    const { name, type, value, itemsLength } = this.props;
+    return (
+      <Space size="small">
+        <Text strong>{name}</Text>
+        <Tag>{type}</Tag>
+        {value && <Text strong> : </Text>}
+        {value && (
+          <Text class={`json-value-${type}`}>
+            {type === "string" ? `"${value}"` : value}
+          </Text>
+        )}
+        {itemsLength && type === "object" && (
+          <Text>{`{ ... ${itemsLength} items }`}</Text>
+        )}
+        {itemsLength && type === "array" && (
+          <Text>{`[ ... ${itemsLength} items ]`}</Text>
+        )}
+      </Space>
+    );
   }
-  return (
-    <Space size="small">
-      <Text strong>{props.propertyName}</Text>
-      <Tag>{props.propertyType}</Tag>
-      {props.value && <Text strong>:</Text>}
-      {jsonValue}
-    </Space>
-  );
 }
+
+JsonLine.propTypes = {
+  name: PropTypes.string.isRequired,
+  type: PropTypes.string.isRequired,
+  value: PropTypes.string,
+  itemsLength: PropTypes.number,
+};

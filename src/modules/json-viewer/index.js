@@ -68,14 +68,17 @@ export default function JsonViewer() {
 
   function btnFormatClicked() {
     try {
-      const root = JSON.parse(input);
-      setInput(JSON.stringify(root, null, 4));
+      setInput(JSON.stringify(JSON.parse(input), null, 4));
     } catch (error) {
       message.error(error.message);
     }
   }
   function btnCompactClicked() {
-    setInput(input.replace(/\s/g, ""));
+    try{
+      setInput(JSON.stringify(JSON.parse(input)));
+    }catch(error){
+      message.error(error.message)
+    }
   }
   function btnEscapeClicked() {
     setInput(JSON.stringify(input));
@@ -93,8 +96,7 @@ export default function JsonViewer() {
   }
   function btnViewClicked() {
     try {
-      const root = JSON.parse(input);
-      const tree = jsonToTree("root", root);
+      const tree = jsonToTree("root", JSON.parse(input));
       setJsonViewTree(tree);
     } catch (error) {
       message.error(error.message);

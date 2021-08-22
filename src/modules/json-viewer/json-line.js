@@ -3,13 +3,21 @@ import "./json-line.css";
 import { Typography, Space, Tag } from "antd";
 import PropTypes from "prop-types";
 const { Text } = Typography;
+const typeColorMap={
+  "null":"red",
+  "object":"blue",
+  "array":"purple",
+  "string":"orange",
+  "number":"magenta",
+  "boolean":"cyan"
+}
 export default class JsonLine extends React.Component {
   render() {
     const { name, type, value, itemsLength } = this.props;
     return (
       <Space size="small">
         <Text strong>{name}</Text>
-        <Tag>{type}</Tag>
+        <Tag color={typeColorMap[type]}>{type}</Tag>
         {value && <Text strong> : </Text>}
         {value && (
           <Text class={`json-value-${type}`}>

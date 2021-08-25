@@ -32,7 +32,7 @@ export default class Cropper extends React.Component {
         if (this.cropper) this.cropper.destroy();
         this.setState({ imgSrc: e.target.result, previewImg: null });
         const cropper = new CropperJs(this.cropperImgRef.current, {
-          viewMode: 3,
+          viewMode: 0,
           dragMode: "move",
           cropend: (e) => {
             const cropped = this.cropper
@@ -112,7 +112,7 @@ export default class Cropper extends React.Component {
               ref={this.cropperImgRef}
               src={this.state.imgSrc}
               alt=""
-              style={{ display: "block", maxWidth: "100%" }}
+              style={{ display: "block", maxWidth: "100%", maxHeight: "500px" }}
             ></img>
           </div>
         </Col>

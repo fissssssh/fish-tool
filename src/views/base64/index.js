@@ -1,88 +1,83 @@
 import { Row, Col, Input, Space, Button, message } from "antd";
-import useBreakpoint from "antd/lib/grid/hooks/useBreakpoint";
-import { useMemo, useState } from "react";
+import React from "react";
 const { TextArea } = Input;
-export default function Base64() {
-  const screens = useBreakpoint();
 
-  const [source, setSource] = useState("");
-  const [destination, setDestination] = useState("");
-
-  const canEncodeOrDecode = useMemo(() => !!source, [source]);
-  const canClear = useMemo(
-    () => !!source || !!destination,
-    [source, destination]
-  );
-  const buttonsDirection = useMemo(
-    () => (screens.md ? "vertical" : "horizontal"),
-    [screens]
-  );
-  function btnClearClicked() {
-    setSource("");
-    setDestination("");
+export default class Base64 extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { source: null, destination: null };
+    this.btnClearClicked = this.btnClearClicked.bind(this);
+    this.btnEncodeClicked = this.btnEncodeClicked.bind(this);
+    this.btnDecodeClicked = this.btnDecodeClicked.bind(this);
   }
-  function btnEncodeClicked() {
+  get canEncodeOrDecode() {
+    return !!this.state.source;
+  }
+  get canClear() {
+    return !!this.state.source || !!this.state.destination;
+  }
+  btnClearClicked() {
+    this.setState({ source: null, destination: null });
+  }
+  btnEncodeClicked() {
     try {
-      const buf = Buffer.from(source, "utf-8");
+      const buf = Buffer.from(this.state.source, "utf-8");
       const encoded = buf.toString("base64");
-      setDestination(encoded);
+      this.setState({ destination: encoded });
     } catch (error) {
       message.error(error.message);
     }
   }
-  function btnDecodeClicked() {
+  btnDecodeClicked() {
     try {
-      const buf = Buffer.from(source, "base64");
+      const buf = Buffer.from(this.state.source, "base64");
       const decoded = buf.toString("utf-8");
-      setDestination(decoded);
+      this.setState({ destination: decoded });
     } catch (error) {
       message.error(error.message);
     }
   }
-  return (
-    <Row gutter={[8, 8]} align="middle">
-      <Col xs={24} sm={24} md={10} lg={11}>
-        <TextArea
-          value={source}
-          onChange={(e) => setSource(e.target.value)}
-          style={{ height: "600px", resize: "none" }}
-          placeholder="Paset plain text or base64 encoded string to here."
-        ></TextArea>
-      </Col>
-      <Col xs={24} sm={24} md={4} lg={2}>
-        <Space
-          direction={buttonsDirection}
-          align={"center"}
-          style={{ width: "100%" }}
-        >
-          <Button
-            onClick={btnEncodeClicked}
-            disabled={!canEncodeOrDecode}
-            type="primary"
-          >
-            Encode
-          </Button>
-          <Button
-            onClick={btnDecodeClicked}
-            disabled={!canEncodeOrDecode}
-            type="primary"
-          >
-            Decode
-          </Button>
-          <Button onClick={btnClearClicked} disabled={!canClear}>
-            Clear
-          </Button>
-        </Space>
-      </Col>
-      <Col xs={24} sm={24} md={10} lg={11}>
-        <TextArea
-          value={destination}
-          onChange={(e) => setDestination(e.target.value)}
-          style={{ height: "600px", resize: "none" }}
-          readOnly
-          placeholder="Click Encode(Decode) button to Encode(Decode)."
-        ></TextArea>
-      </Col>
-    </Row>
-  );
+  render() {
+    return (
+      <Row gutter={[8, 8]} align="middle">
+        <Col span={24}>
+          <TextArea
+            value={this.state.source}
+            onChange={(e) => this.setState({ source: e.target.value })}
+            style={{ height: "200px", resize: "none" }}
+            placeholder="Paset plain text or base64 encoded string to here."
+          ></TextArea>
+        </Col>
+        <Col span={24}>
+          <Space align={"center"} style={{ width: "100%" }}>
+            <Button
+              onClick={this.btnEncodeClicked}
+              disabled={!this.canEncodeOrDecode}
+              type="primary"
+            >
+              Encode
+            </Button>
+            <Button
+              onClick={this.btnDecodeClicked}
+              disabled={!this.canEncodeOrDecode}
+              type="primary"
+            >
+              Decode
+            </Button>
+            <Button onClick={this.btnClearClicked} disabled={!this.canClear}>
+              Clear
+            </Button>
+          </Space>
+        </Col>
+        <Col span={24}>
+          <TextArea
+            value={this.state.destination}
+            style={{ height: "200px", resize: "none" }}
+            readOnly
+            placeholder="Click Encode(Decode) button to Encode(Decode)."
+          ></TextArea>
+        </Col>
+      </Row>
+    );
+  }
 }

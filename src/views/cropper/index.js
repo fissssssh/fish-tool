@@ -4,32 +4,35 @@ import React from "react";
 import CropperJs from "cropperjs";
 import "cropperjs/dist/cropper.css";
 import { Button, Col, Row, Space, Upload, message } from "antd";
-import { RedoOutlined } from "@ant-design/icons";
+import IconFont from "../../plugins/iconfont";
 export default class Cropper extends React.Component {
   constructor(props) {
     super(props);
     this.cropperImgRef = React.createRef();
     this.cropper = null;
+    this.scaleX = 1;
+    this.scaleY = 1;
     this.state = {
       imgSrc: null,
       previewImg: null,
       previewImgWidth: 256,
       previewImgHeight: 144,
     };
-    this.btnImportClicked = this.btnImportClicked.bind(this);
-    this.btnRotateClicked = this.btnRotateClicked.bind(this);
-    this.btnSaveClicked = this.btnSaveClicked.bind(this);
   }
   componentWillUnmount() {
     if (this.cropper) {
       this.cropper.destroy();
+      this.cropper = null;
     }
   }
   btnImportClicked(file) {
     try {
       const fr = new FileReader();
       fr.onload = (e) => {
-        if (this.cropper) this.cropper.destroy();
+        if (this.cropper) {
+          this.cropper.destroy();
+          this.cropper = null;
+        }
         this.setState({ imgSrc: e.target.result, previewImg: null });
         const cropper = new CropperJs(this.cropperImgRef.current, {
           viewMode: 0,
@@ -77,9 +80,21 @@ export default class Cropper extends React.Component {
       return Upload.LIST_IGNORE;
     }
   }
-  btnRotateClicked() {
+  btnRotateClicked(deg) {
     if (this.cropper) {
-      this.cropper.rotate(45);
+      this.cropper.rotate(deg);
+    }
+  }
+  btnFlipClicked(orientation) {
+    if (!this.cropper) {
+      return;
+    }
+    if (orientation === "vertical") {
+      this.scaleY *= -1;
+      this.cropper.scaleY(this.scaleY);
+    } else if (orientation === "horizontal") {
+      this.scaleX *= -1;
+      this.cropper.scaleX(this.scaleX);
     }
   }
   btnSaveClicked() {
@@ -93,20 +108,45 @@ export default class Cropper extends React.Component {
   render() {
     return (
       <Row gutter={[8, 8]}>
-        <Col span={24}>
+        <Col xs={12} sm={12} md={9}>
           <Space>
-            <Upload accept="image/*" beforeUpload={this.btnImportClicked}>
+            <Upload
+              accept="image/*"
+              beforeUpload={(file) => this.btnImportClicked(file)}
+            >
               <Button>Import</Button>
             </Upload>
-            <Button type="primary" onClick={this.btnSaveClicked}>
+            <Button type="primary" onClick={() => this.btnSaveClicked()}>
               Save
-            </Button>
-            <Button shape="circle" onClick={this.btnRotateClicked}>
-              <RedoOutlined />
             </Button>
           </Space>
         </Col>
-        <Col sm={24} md={18}>
+        {this.cropper && (
+          <Col xs={12} sm={12} md={9} style={{ textAlign: "right" }}>
+            <Space>
+              <Button shape="circle" onClick={() => this.btnRotateClicked(-45)}>
+                <IconFont type="icon-fanzhuannishizhen" />
+              </Button>
+              <Button shape="circle" onClick={() => this.btnRotateClicked(45)}>
+                <IconFont type="icon-fanzhuanshunshizhen" />
+              </Button>
+              <Button
+                shape="circle"
+                onClick={() => this.btnFlipClicked("vertical")}
+              >
+                <IconFont type="icon-chuizhifanzhuan" />
+              </Button>
+              <Button
+                shape="circle"
+                onClick={() => this.btnFlipClicked("horizontal")}
+              >
+                <IconFont type="icon-shuipingfanzhuan" />
+              </Button>
+            </Space>
+          </Col>
+        )}
+
+        <Col xs={24} sm={24} md={18}>
           <div>
             <img
               ref={this.cropperImgRef}
@@ -116,7 +156,7 @@ export default class Cropper extends React.Component {
             ></img>
           </div>
         </Col>
-        <Col sm={24} md={6}>
+        <Col xs={24} sm={24} md={6}>
           <div
             className="img-preview preview-lg"
             style={{

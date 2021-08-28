@@ -1,7 +1,7 @@
-import Base64 from "../modules/base64";
-import Home from "../modules/home";
-import JsonViewer from "../modules/json-viewer";
-import Cropper from "../modules/cropper";
+import Base64 from "../views/base64";
+import Home from "../views/home";
+import JsonViewer from "../views/json-viewer";
+import Cropper from "../views/cropper";
 
 const routes = [
   {

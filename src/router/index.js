@@ -2,6 +2,7 @@ import Base64 from "../views/base64";
 import Home from "../views/home";
 import JsonViewer from "../views/json-viewer";
 import Cropper from "../views/cropper";
+import TimeConverter from "../views/time-converter";
 
 const routes = [
   {
@@ -12,7 +13,7 @@ const routes = [
     meta: { title: "Home" },
   },
   {
-    path: "/json-viewer",
+    path: "/jsonviewer",
     name: "JsonViewer",
     component: JsonViewer,
     meta: { title: "JsonViewer" },
@@ -28,6 +29,12 @@ const routes = [
     name: "Cropper",
     component: Cropper,
     meta: { title: "Cropper" },
+  },
+  {
+    path: "/timeconverter",
+    name: "TimeConverter",
+    component: TimeConverter,
+    meta: { title: "TimeConverter" },
   },
 ];
 export default routes;

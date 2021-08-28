@@ -9,6 +9,7 @@
     "@testing-library/user-event": "^12.8.3",
     "antd": "^4.16.12",
     "cropperjs": "^1.5.12",
+    "moment": "^2.29.1",
     "prop-types": "^15.7.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
